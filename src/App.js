@@ -93,7 +93,8 @@ function App() {
       return res
     })
   }, [])
-  const scarabColumns = React.useMemo(itemsMeta.scarabs.columns)
+  // eslint-disable-next-line
+  const scarabColumns = React.useMemo(itemsMeta.scarabs.columns, [])
   return (
     <div className="App container mx-auto">
       <h1>POE Flip</h1>
