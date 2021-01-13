@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useTable } from 'react-table'
+import { useTable, useFilters } from 'react-table'
 import poeNinjaApi from '../api/poeninja'
 import { itemsMeta, poeNinjaURLBuilder } from '../utils/poeninja'
 import { useParams } from 'react-router-dom'
@@ -26,7 +26,7 @@ export default function ItemDetails() {
   }, [item, league])
 
   return (
-        <div className="scarabs-table">
+        <div className="items-table">
           <Styles>
             <Table columns={itemColumns} data={items} />
           </Styles>
@@ -41,6 +41,7 @@ const Styles = styled.div`
   padding: 1rem;
 
   table {
+    width: 100%;
     border-spacing: 0;
     border: 1px solid black;
 
@@ -77,7 +78,7 @@ function Table({ columns, data }) {
   } = useTable({
     columns,
     data,
-  })
+  }, useFilters)
 
   // Render the UI for your table
   return (
@@ -86,7 +87,11 @@ function Table({ columns, data }) {
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+              <th {...column.getHeaderProps()}>
+                  {column.render('Header')}
+                  {/* Render the columns filter UI */}
+                  <div>{column.canFilter ? column.render('Filter') : null}</div>
+                </th>
             ))}
           </tr>
         ))}
