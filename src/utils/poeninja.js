@@ -99,28 +99,66 @@ const defaultColumns = (otherColumns = [], { league = 'Standard'} = {}) => [
     }
   }
 ]
-
+// ICONS URLs
+//  https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/FragmentPhoenix.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/Delirium/DeliriumOrbScarabs.png?w=1&h=1&scale=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/Strongholds/IvoryWatchstone5.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/blight/items/OpalescentOil.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/Incubation/IncubationAbyss.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/Scarabs/GreaterScarabBreach.png?scale=1&scaleIndex=0&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/Delve/SanctifiedFossil.png?w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/Delve/Reroll2x2A.png?w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/Essence/Woe7.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Divination/InventoryIcon.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/ProphecyOrbRed.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Gems/Portal.png?scale=1&scaleIndex=0&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Rings/OpalRing.png?scale=1&scaleIndex=0&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Gems/ClusterBurst.png?scale=1&scaleIndex=0&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Maps/UndeadSiege.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/Gorge3.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Jewels/unique7.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/gen/image/WzksMTQseyJmIjoiMkRJdGVtc1wvRmxhc2tzXC9UYXN0ZU9mSGF0ZSIsInciOjEsImgiOjIsInNjYWxlIjp0cnVlLCJsZXZlbCI6MX1d/4727ad7a3a/Item.png
+//  https://web.poecdn.com/image/Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/Varunastra.png?scale=1&w=2&h=3
+//  https://web.poecdn.com/image/Art/2DItems/Armours/Boots/Skyforth.png?scale=1&w=2&h=2
+//  https://web.poecdn.com/image/Art/2DItems/Amulets/AgateAmuletUnique.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/BestiaryOrbFull.png?scale=1&w=1&h=1
+//  https://web.poecdn.com/image/Art/2DItems/Currency/VialTemperedFlesh.png?scale=1&w=1&h=1
 const itemsMeta = {
   currency: {
+    disabled: true,
     id: 'Currency',
-    endpoint: 'currencyoverview'
+    columns: defaultColumns,
+    endpoint: 'CurrencyOverview',
+    icon:  'https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1'
   },
   fragment: {
+    disabled: true,
     id: 'Fragment',
-    endpoint: 'currencyoverview'
+    columns: defaultColumns,
+    endpoint: 'CurrencyOverview',
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/FragmentPhoenix.png?scale=1&w=1&h=1'
   },
   oil: {
     id: 'Oil',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/blight/items/OpalescentOil.png?scale=1&w=1&h=1'
   },
-  incubators: {
-    id: 'Incubators'
+  incubator: {
+    id: 'Incubator',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/Incubation/IncubationAbyss.png?scale=1&w=1&h=1'
   },
-  scarabs: {
-    id: 'Scarabs',
-    columns: defaultColumns
+  scarab: {
+    id: 'Scarab',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/Scarabs/GreaterScarabBreach.png?scale=1&scaleIndex=0&w=1&h=1'
   }
 }
-const poeNinjaURLBuilder = (objectType, endpoint = 'itemoverview', league = 'Standard' ) => {
+const poeNinjaURLBuilder = (objectType, { league = 'Standard' } = {} ) => {
+  const thisItemMetaInfo = itemsMeta[objectType.toLowerCase()]
+  console.log('thisItemMetaInfo', thisItemMetaInfo);
+  const endpoint = thisItemMetaInfo?.endpoint?.length > 0 ? thisItemMetaInfo.endpoint : 'ItemOverview'
   return `${endpoint}?league=${league}&type=${objectType}`
 }
 

@@ -1,113 +1,58 @@
 import './App.css';
-import poeNinjaApi from './api/poeninja'
-import { itemsMeta, poeNinjaURLBuilder } from './utils/poeninja'
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { useTable } from 'react-table'
-console.log('itemsMeta', itemsMeta);
-const Styles = styled.div`
-  padding: 1rem;
+import React, { useState } from 'react'
+import Select from 'react-select'
+import { itemsMeta } from './utils/poeninja'
+import ItemDetails from './views/ItemDetails'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
-  table {
-    border-spacing: 0;
-    border: 1px solid black;
+const leagues = [
+  { value: 'Standard', label: 'Standard' },
+  { value: 'Heist', label: 'Heist' },
+]
 
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
-    }
-
-    th,
-    td {
-      margin: 0;
-      padding: 0.5rem;
-      border-bottom: 1px solid black;
-      border-right: 1px solid black;
-      :last-child {
-        border-right: 0;
-      }
-    }
-  }
-`
-
-function Table({ columns, data }) {
-  // Use the state and functions returned from useTable to build your UI
-  // debugger
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({
-    columns,
-    data,
-  })
-
-  // Render the UI for your table
-  return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  )
-}
-
+const DEFAULT_LEAGUE = 'Standard'
 function App() {
-  const [items, setItems] = useState({})
 
-  // "mounted"
-  useEffect(() => {
-    poeNinjaApi({
-      method: 'GET',
-      url: poeNinjaURLBuilder('Scarab')
-    }).then(res => {
-      console.log('res', res);
-      setItems({
-        scarabs: {
-          items: res.data?.lines,
-        }
-      })
-      return res
-    })
-  }, [])
-  // eslint-disable-next-line
-  const scarabColumns = React.useMemo(itemsMeta.scarabs.columns, [])
+
+  const [chosenLeague, setChosenLeague] = useState(DEFAULT_LEAGUE)
+
   return (
     <div className="App container mx-auto">
       <h1>POE Flip</h1>
+      <Select
+        options={leagues}
+        onChange={(choice) => setChosenLeague(choice.value)}
+        defaultValue={leagues[0]}
+        />
       <hr />
-      { items?.scarabs?.items.length > 0 ?
-        <div className="scarabs-table">
-          <Styles>
-            <Table columns={scarabColumns} data={items.scarabs.items} />
-          </Styles>
-        </div>
-        :
-        <span>Scarabs not loaded</span>
-      }
+      <Router>
+      <div>
+
+      <div className="menu-items my-4 flex">
+        {Object.entries(itemsMeta).map(([k, value]) => {
+          return (
+            <Link to={value.disabled ? '#' : `/${chosenLeague}/${value.id}`} className="link" key={k}>
+              <img src={value.icon} alt={value.id}/>
+            </Link>
+          )
+        })}
+      </div>
+
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route path="/:league/:item">
+            <ItemDetails />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
     </div>
   );
 }
