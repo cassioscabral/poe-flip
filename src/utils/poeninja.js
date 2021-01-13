@@ -32,8 +32,7 @@ import React from 'react'
 //   })
 // }
 
-const defaultColumns = (otherColumns = [], { league = 'Standard'} = {}) => [
-  ...[
+const defaultColumns = (league = 'Standard') => () => [
   {
     Header: 'Name',
     // accessor: 'name',
@@ -80,20 +79,20 @@ const defaultColumns = (otherColumns = [], { league = 'Standard'} = {}) => [
         </div>
       )
     }
-  }
-  ],
-  ...otherColumns,
+  },
   {
     Header: 'Actions',
     Cell: row => {
       return (
         <div className="actions">
 {/* https://www.pathofexile.com/trade/search/Standard?q={%22query%22:{%22filters%22:{},%22type%22:%22Winged%20Bestiary%20Scarab%22}} */}
-          <button
+          <a
             className="border-aqua border-2 p-2 rounded"
-            onClick={() => window.open(`https://www.pathofexile.com/trade/search/${league}?q={"query":{"filters":{},"type":"${row.row.original.name}"}}`, '_blank')}>
+            target="_blank"
+            rel="noreferrer"
+            href={`https://www.pathofexile.com/trade/search/${league}?q={"query":{"filters":{},"type":"${row.row.original.name}"}}`}>
           Search
-        </button>
+        </a>
       </div>
       )
     }
@@ -125,20 +124,20 @@ const defaultColumns = (otherColumns = [], { league = 'Standard'} = {}) => [
 //  https://web.poecdn.com/image/Art/2DItems/Currency/BestiaryOrbFull.png?scale=1&w=1&h=1
 //  https://web.poecdn.com/image/Art/2DItems/Currency/VialTemperedFlesh.png?scale=1&w=1&h=1
 const itemsMeta = {
-  currency: {
-    disabled: true,
-    id: 'Currency',
-    columns: defaultColumns,
-    endpoint: 'CurrencyOverview',
-    icon:  'https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1'
-  },
-  fragment: {
-    disabled: true,
-    id: 'Fragment',
-    columns: defaultColumns,
-    endpoint: 'CurrencyOverview',
-    icon: 'https://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/FragmentPhoenix.png?scale=1&w=1&h=1'
-  },
+  // currency: {
+  //   disabled: true,
+  //   id: 'Currency',
+  //   columns: defaultColumns,
+  //   endpoint: 'CurrencyOverview',
+  //   icon:  'https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1'
+  // },
+  // fragment: {
+  //   disabled: true,
+  //   id: 'Fragment',
+  //   columns: defaultColumns,
+  //   endpoint: 'CurrencyOverview',
+  //   icon: 'https://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/FragmentPhoenix.png?scale=1&w=1&h=1'
+  // },
   oil: {
     id: 'Oil',
     columns: defaultColumns,

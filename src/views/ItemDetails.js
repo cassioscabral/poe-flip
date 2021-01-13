@@ -11,7 +11,7 @@ export default function ItemDetails() {
   let { league, item } = useParams()
   const itemMeta = itemsMeta[item.toLowerCase()]
   // eslint-disable-next-line
-  const itemColumns = React.useMemo(itemMeta.columns, [])
+  const itemColumns = React.useMemo(itemMeta.columns(league), [league])
   const [items, setItems] = useState([])
   // "mounted"
   useEffect(() => {
