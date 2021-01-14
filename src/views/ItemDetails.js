@@ -45,6 +45,7 @@ const Styles = styled.div`
     border: 1px solid black;
 
     tr {
+      cursor: pointer;
       :last-child {
         td {
           border-bottom: 0;
@@ -129,12 +130,12 @@ function Table({ columns, data, league }) {
 
   // Render the UI for your table
   return (
-    <>
+  <>
     <div className="bulk-actions">
         <button
           disabled={selectedFlatRows.length === 0}
           onClick={() => poeTradeMultiSearch(selectedFlatRows.map(r => r.original.name), league)}
-          className="button border-2 border-black rounded p-3">
+          className="button border-2 border-green-700 rounded p-3 bg-green-500 text-white">
           Multi-search
       </button>
     </div>
@@ -172,21 +173,6 @@ function Table({ columns, data, league }) {
         })}
       </tbody>
     </table>
-    <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              selectedRowIds: selectedRowIds,
-              'selectedFlatRows[].original': selectedFlatRows.map(
-                d => d.original.name
-              ),
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
   </>
   )
 }

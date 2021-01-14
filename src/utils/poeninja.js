@@ -1,5 +1,6 @@
 import React from 'react'
 import LazyLoad from 'react-lazyload';
+import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines';
 
 const defaultColumns = (league = 'Standard') => () => [
   {
@@ -12,7 +13,7 @@ const defaultColumns = (league = 'Standard') => () => [
           { originalItem?.icon.length > 0 ?
             <div className="item-icon mr-2">
               <LazyLoad width={48} height={48}>
-                  <img class="w-auto h-12" src={originalItem.icon} alt={originalItem.name}/>
+                  <img className="w-auto h-12" src={originalItem.icon} alt={originalItem.name}/>
               </LazyLoad>
             </div>
             :
@@ -33,9 +34,15 @@ const defaultColumns = (league = 'Standard') => () => [
     Filter: NumberRangeColumnFilter,
     filter: 'between',
     Cell: row => {
-      const { totalChange } = row.row.original.sparkline
+      const { totalChange, data } = row.row.original.sparkline
+      console.log('data', data);
       return (
         <div className={'item-change' + (totalChange > 0 ? ' text-green-600' : ' text-red-600')}>
+          {/* <Sparklines data={data} limit={7} width={100} height={20} margin={5} color="blue"/> */}
+          <Sparklines data={data}>
+            <SparklinesLine color="blue" />
+            <SparklinesReferenceLine type="mean" />
+          </Sparklines>
           {totalChange > 0 ? '+' : null}{totalChange}%
         </div>
       )

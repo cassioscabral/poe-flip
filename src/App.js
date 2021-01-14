@@ -39,7 +39,7 @@ function App() {
             <Link to={value.disabled ? '#' : `/${chosenLeague}/${value.id}`} className="link" key={k}>
 
               <LazyLoad width={48} height={48}>
-                <img class="w-auto h-12" src={value.icon} alt={value.id}/>
+                <img className="w-auto h-12" src={value.icon} alt={value.id}/>
               </LazyLoad>
             </Link>
           )
