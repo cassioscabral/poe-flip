@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "PoE Flip Machine",
+  "name": "Helper to find good items and flip them",
   "icons": [
     {
       "src": "favicon.ico",

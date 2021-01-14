@@ -19,21 +19,20 @@ export default function ItemDetails() {
       method: 'GET',
       url: poeNinjaURLBuilder(item, { league })
     }).then(res => {
-      console.log('res', res);
       setItems(res.data?.lines)
       return res
     })
   }, [item, league])
 
-  return (
+  return items.length > 0 ?
         <div className="items-table">
           <Styles>
             <Table columns={itemColumns} data={items} />
           </Styles>
         </div>
-  )
+        :
+        <span className="loading"> Loading... </span>
 }
-
 
 
 

@@ -1,36 +1,5 @@
 import React from 'react'
-// Category	API
-// Currency	https://poe.ninja/api/data/currencyoverview?league=Blight&type=Currency
-// Fragment	https://poe.ninja/api/data/currencyoverview?league=Blight&type=Fragment
-// Oils	https://poe.ninja/api/data/itemoverview?league=Blight&type=Oil
-// Incubators	https://poe.ninja/api/data/itemoverview?league=Blight&type=Incubator
-// Scarabs	https://poe.ninja/api/data/itemoverview?league=Blight&type=Scarab
-// Fossils	https://poe.ninja/api/data/itemoverview?league=Blight&type=Fossil
-// Resonators	https://poe.ninja/api/data/itemoverview?league=Blight&type=Resonator
-// Essence	https://poe.ninja/api/data/itemoverview?league=Blight&type=Essence
-// Divination Cards	https://poe.ninja/api/data/itemoverview?league=Blight&type=DivinationCard
-// Prophecies	https://poe.ninja/api/data/itemoverview?league=Blight&type=Prophecy
-// Skill Gems	https://poe.ninja/api/data/itemoverview?league=Blight&type=SkillGem
-// Base Types	https://poe.ninja/api/data/itemoverview?league=Blight&type=BaseType
-// Helmet Enchants	https://poe.ninja/api/data/itemoverview?league=Blight&type=HelmetEnchant
-// Unique Maps	https://poe.ninja/api/data/itemoverview?league=Blight&type=UniqueMap
-// Maps	https://poe.ninja/api/data/itemoverview?type=Map&league=Standard
-// Unique Jewels	https://poe.ninja/api/data/itemoverview?league=Blight&type=UniqueJewel
-// Unique Flasks	https://poe.ninja/api/data/itemoverview?league=Blight&type=UniqueFlask
-// Unique Weapons	https://poe.ninja/api/data/itemoverview?league=Blight&type=UniqueWeapon
-// Unique Armours	https://poe.ninja/api/data/itemoverview?league=Blight&type=UniqueArmour
-// Unique Accessories	https://poe.ninja/api/data/itemoverview?league=Blight&type=UniqueAccessory
-// Beasts	https://poe.ninja/api/data/itemoverview?league=Blight&type=Beast
-
-
-// const itemNormalizer = {
-//   currency: (item) => ({
-
-//   }),
-//   scarabs: (item) => ({
-
-//   })
-// }
+import LazyLoad from 'react-lazyload';
 
 const defaultColumns = (league = 'Standard') => () => [
   {
@@ -42,13 +11,17 @@ const defaultColumns = (league = 'Standard') => () => [
         <div className="item-name flex items-center justify-left">
           { originalItem?.icon.length > 0 ?
             <div className="item-icon mr-2">
-              <img src={originalItem.icon} alt={originalItem.name} />
+              <LazyLoad width={48} height={48}>
+                  <img class="w-auto h-12" src={originalItem.icon} alt={originalItem.name}/>
+              </LazyLoad>
             </div>
             :
             <span/>
           }
           <div className="item-name">
-            { originalItem.name }
+            {originalItem.name}
+            {originalItem?.variant?.length > 0 ? `, ${originalItem.variant}` : null}
+            {originalItem?.baseType?.length > 0 ? `, ${originalItem.baseType}` : null}
           </div>
         </div>
       )
@@ -157,6 +130,66 @@ const itemsMeta = {
     id: 'Scarab',
     columns: defaultColumns,
     icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/Scarabs/GreaterScarabBreach.png?scale=1&scaleIndex=0&w=1&h=1'
+  },
+  watchstone: {
+    id: 'Watchstone',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/Strongholds/IvoryWatchstone5.png?scale=1&w=1&h=1'
+  },
+  fossil: {
+    id: 'Fossil',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/Delve/SanctifiedFossil.png?w=1&h=1'
+  },
+  essence: {
+    id: 'Essence',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/Essence/Woe7.png?scale=1&w=1&h=1'
+  },
+  divinationcard: {
+    id: 'DivinationCard',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Divination/InventoryIcon.png?scale=1&w=1&h=1'
+  },
+  prophecy: {
+    id: 'Prophecy',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/ProphecyOrbRed.png?scale=1&w=1&h=1'
+  },
+  skillgem: {
+    id: 'SkillGem',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Gems/ClusterBurst.png?scale=1&scaleIndex=0&w=1&h=1'
+  },
+  // basetype: {
+  //   id: 'BaseType',
+  //   columns: defaultColumns,
+  //   icon: 'https://web.poecdn.com/image/Art/2DItems/Rings/OpalRing.png?scale=1&scaleIndex=0&w=1&h=1'
+  // },
+  uniquemap: {
+    id: 'UniqueMap',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Maps/UndeadSiege.png?scale=1&w=1&h=1'
+  },
+  uniquejewel: {
+    id: 'UniqueJewel',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Jewels/unique7.png?scale=1&w=1&h=1'
+  },
+  uniqueflask: {
+    id: 'UniqueFlask',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/gen/image/WzksMTQseyJmIjoiMkRJdGVtc1wvRmxhc2tzXC9UYXN0ZU9mSGF0ZSIsInciOjEsImgiOjIsInNjYWxlIjp0cnVlLCJsZXZlbCI6MX1d/4727ad7a3a/Item.png?scale=1&w=1&h=1'
+  },
+  beast: {
+    id: 'Beast',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/BestiaryOrbFull.png?scale=1&w=1&h=1'
+  },
+  vial: {
+    id: 'Vial',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Currency/VialTemperedFlesh.png?scale=1&w=1&h=1'
   }
 }
 const poeNinjaURLBuilder = (objectType, { league = 'Standard' } = {} ) => {

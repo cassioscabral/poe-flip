@@ -10,6 +10,7 @@ import {
   Link
 } from "react-router-dom";
 
+import LazyLoad from 'react-lazyload';
 const leagues = [
   { value: 'Standard', label: 'Standard' },
   { value: 'Heist', label: 'Heist' },
@@ -37,7 +38,10 @@ function App() {
         {Object.entries(itemsMeta).map(([k, value]) => {
           return (
             <Link to={value.disabled ? '#' : `/${chosenLeague}/${value.id}`} className="link" key={k}>
-              <img src={value.icon} alt={value.id}/>
+
+              <LazyLoad width={48} height={48}>
+                <img class="w-auto h-12" src={value.icon} alt={value.id}/>
+              </LazyLoad>
             </Link>
           )
         })}
