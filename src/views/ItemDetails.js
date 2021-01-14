@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useTable, useFilters } from 'react-table'
+import { useTable, useFilters, useSortBy } from 'react-table'
 import poeNinjaApi from '../api/poeninja'
 import { itemsMeta, poeNinjaURLBuilder } from '../utils/poeninja'
 import { useParams } from 'react-router-dom'
@@ -77,7 +77,18 @@ function Table({ columns, data }) {
   } = useTable({
     columns,
     data,
-  }, useFilters)
+    initialState: {
+      sortBy: [
+        {
+          id: 'sparkline.totalChange',
+          desc: true
+        }
+      ]
+    }
+  },
+    useFilters,
+    useSortBy
+  )
 
   // Render the UI for your table
   return (
@@ -86,11 +97,18 @@ function Table({ columns, data }) {
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                  {/* Render the columns filter UI */}
-                  <div>{column.canFilter ? column.render('Filter') : null}</div>
-                </th>
+              <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                {column.render('Header')}
+                <span>
+                  {column.isSorted
+                    ? column.isSortedDesc
+                      ? ' 🔽'
+                      : ' 🔼'
+                    : ''}
+                  </span>
+                {/* Render the columns filter UI */}
+                <div>{column.canFilter ? column.render('Filter') : null}</div>
+              </th>
             ))}
           </tr>
         ))}

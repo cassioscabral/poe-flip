@@ -36,7 +36,7 @@ const defaultColumns = (league = 'Standard') => () => [
       const { totalChange } = row.row.original.sparkline
       return (
         <div className={'item-change' + (totalChange > 0 ? ' text-green-600' : ' text-red-600')}>
-          {totalChange}
+          {totalChange > 0 ? '+' : null}{totalChange}%
         </div>
       )
     }
