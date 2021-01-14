@@ -76,7 +76,6 @@ function Table({ columns, data, league }) {
     rows,
     prepareRow,
     selectedFlatRows,
-    state: { selectedRowIds }
   } = useTable({
     columns,
     data,
