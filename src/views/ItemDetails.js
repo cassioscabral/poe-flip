@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useTable, useFilters, useSortBy } from 'react-table'
+import { useTable, useFilters, useSortBy, useRowSelect } from 'react-table'
 import poeNinjaApi from '../api/poeninja'
 import { itemsMeta, poeNinjaURLBuilder } from '../utils/poeninja'
 import { useParams } from 'react-router-dom'
@@ -74,6 +74,8 @@ function Table({ columns, data }) {
     headerGroups,
     rows,
     prepareRow,
+    selectedFlatRows,
+    state: { selectedRowIds }
   } = useTable({
     columns,
     data,
@@ -87,11 +89,36 @@ function Table({ columns, data }) {
     }
   },
     useFilters,
-    useSortBy
+    useSortBy,
+    useRowSelect,
+    hooks => {
+      hooks.visibleColumns.push(columns => [
+        // Let's make a column for selection
+        {
+          id: 'selection',
+          // The header can use the table's getToggleAllRowsSelectedProps method
+          // to render a checkbox
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <div>
+              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+            </div>
+          ),
+          // The cell can use the individual row's getToggleRowSelectedProps method
+          // to the render a checkbox
+          Cell: ({ row }) => (
+            <div>
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+            </div>
+          ),
+        },
+        ...columns,
+      ])
+    }
   )
 
   // Render the UI for your table
   return (
+    <>
     <table {...getTableProps()}>
       <thead>
         {headerGroups.map(headerGroup => (
@@ -126,5 +153,39 @@ function Table({ columns, data }) {
         })}
       </tbody>
     </table>
+    <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
+      {/* <pre>
+        <code>
+          {JSON.stringify(
+            {
+              selectedRowIds: selectedRowIds,
+              'selectedFlatRows[].original': selectedFlatRows.map(
+                d => d.original
+              ),
+            },
+            null,
+            2
+          )}
+        </code>
+      </pre> */}
+  </>
   )
 }
+
+
+const IndeterminateCheckbox = React.forwardRef(
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef()
+    const resolvedRef = ref || defaultRef
+
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate
+    }, [resolvedRef, indeterminate])
+
+    return (
+      <>
+        <input type="checkbox" ref={resolvedRef} {...rest} />
+      </>
+    )
+  }
+)

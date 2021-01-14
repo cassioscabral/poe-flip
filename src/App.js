@@ -5,10 +5,9 @@ import { itemsMeta } from './utils/poeninja'
 import ItemDetails from './views/ItemDetails'
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
   Link
 } from "react-router-dom";
+import CacheRoute, { CacheSwitch } from 'react-router-cache-route'
 
 import LazyLoad from 'react-lazyload';
 const leagues = [
@@ -50,11 +49,11 @@ function App() {
 
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/:league/:item">
+        <CacheSwitch>
+          <CacheRoute path="/:league/:item">
             <ItemDetails />
-          </Route>
-        </Switch>
+          </CacheRoute>
+        </CacheSwitch>
       </div>
     </Router>
     </div>

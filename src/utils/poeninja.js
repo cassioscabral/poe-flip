@@ -220,9 +220,7 @@ function NumberRangeColumnFilter({
 
   return (
     <div
-      style={{
-        display: 'flex',
-      }}
+      className="flex w-full justify-between"
     >
       <input
         value={filterValue[0] || ''}
@@ -232,9 +230,9 @@ function NumberRangeColumnFilter({
           setFilter((old = []) => [val ? parseInt(val, 10) : undefined, old[1]])
         }}
         placeholder={`Min (${min})`}
+        className="rounded border-2 border-gray-500 p-1"
         style={{
-          width: '70px',
-          marginRight: '0.5rem',
+          width: '120px',
         }}
       />
       to
@@ -246,9 +244,9 @@ function NumberRangeColumnFilter({
           setFilter((old = []) => [old[0], val ? parseInt(val, 10) : undefined])
         }}
         placeholder={`Max (${max})`}
+        className="rounded border-2 border-gray-500 p-1"
         style={{
-          width: '70px',
-          marginLeft: '0.5rem',
+          width: '120px',
         }}
       />
     </div>
