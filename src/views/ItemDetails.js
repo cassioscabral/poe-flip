@@ -27,7 +27,7 @@ export default function ItemDetails() {
   return items.length > 0 ?
         <div className="items-table">
           <Styles>
-            <Table columns={itemColumns} data={items} />
+            <Table columns={itemColumns} data={items} league={league}/>
           </Styles>
         </div>
         :
@@ -65,7 +65,7 @@ const Styles = styled.div`
   }
 `
 
-function Table({ columns, data }) {
+function Table({ columns, data, league }) {
   // Use the state and functions returned from useTable to build your UI
   // debugger
   const {
@@ -116,10 +116,29 @@ function Table({ columns, data }) {
     }
   )
 
+  const openListOfURLs = (listOfURLs = [], target = '_blank') => {
+    listOfURLs.forEach(url => window.open(url, target))
+  }
+
+  const poeTradeMultiSearch = (listOfNamesToQuery = [], league = 'Standard') => {
+    const listOfURLs = listOfNamesToQuery.map(query => {
+      return `https://www.pathofexile.com/trade/search/${league}?q={"query":{"filters":{},"type":"${query}"}}`
+    })
+    openListOfURLs(listOfURLs)
+  }
+
   // Render the UI for your table
   return (
     <>
-    <table {...getTableProps()}>
+    <div className="bulk-actions">
+        <button
+          disabled={selectedFlatRows.length === 0}
+          onClick={() => poeTradeMultiSearch(selectedFlatRows.map(r => r.original.name), league)}
+          className="button border-2 border-black rounded p-3">
+          Multi-search
+      </button>
+    </div>
+    <table {...getTableProps()} className="mt-4">
       <thead>
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -144,7 +163,7 @@ function Table({ columns, data }) {
         {rows.map((row, i) => {
           prepareRow(row)
           return (
-            <tr {...row.getRowProps()}>
+            <tr {...row.getRowProps()} onClick={row.toggleRowSelected}>
               {row.cells.map(cell => {
                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
               })}
