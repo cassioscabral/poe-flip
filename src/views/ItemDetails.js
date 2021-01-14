@@ -154,20 +154,20 @@ function Table({ columns, data }) {
       </tbody>
     </table>
     <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
-      {/* <pre>
+      <pre>
         <code>
           {JSON.stringify(
             {
               selectedRowIds: selectedRowIds,
               'selectedFlatRows[].original': selectedFlatRows.map(
-                d => d.original
+                d => d.original.name
               ),
             },
             null,
             2
           )}
         </code>
-      </pre> */}
+      </pre>
   </>
   )
 }
