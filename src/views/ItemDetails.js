@@ -5,7 +5,7 @@ import { useTable, useFilters, useSortBy, useRowSelect } from 'react-table'
 import poeNinjaApi from '../api/poeninja'
 import { itemsMeta, poeNinjaURLBuilder, searchQueryBuilder } from '../utils/poeninja'
 import { useParams } from 'react-router-dom'
-
+const MAX_ITEMS_TO_LIST = 500
 export default function ItemDetails() {
 
   let { league, item } = useParams()
@@ -21,8 +21,9 @@ export default function ItemDetails() {
       url: poeNinjaURLBuilder(item, { league })
     }).then(res => {
       let items = res.data?.lines
-      if (items.length > 500) {
-        items = items.filter(i => i.sparkline.totalChange > 0).slice(0, 500)
+      if (items.length > MAX_ITEMS_TO_LIST) {
+        // limit the number of items
+        items = items.filter(i => i.sparkline.totalChange > 0).slice(0, MAX_ITEMS_TO_LIST)
       }
 
       const normalizedItems = items.map(i => ({...i, itemType: itemObjectIDProperty}))
@@ -33,6 +34,7 @@ export default function ItemDetails() {
 
   return items.length > 0 ?
         <div className="items-table">
+          <div className="text-lg">{ item }</div>
           <Styles>
             <Table columns={itemColumns} data={items} league={league}/>
           </Styles>
