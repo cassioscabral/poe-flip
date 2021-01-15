@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useTable, useFilters, useSortBy, useRowSelect } from 'react-table'
 import poeNinjaApi from '../api/poeninja'
-import { itemsMeta, poeNinjaURLBuilder } from '../utils/poeninja'
+import { itemsMeta, poeNinjaURLBuilder, searchQueryBuilder } from '../utils/poeninja'
 import { useParams } from 'react-router-dom'
 
 export default function ItemDetails() {
 
   let { league, item } = useParams()
-  const itemMeta = itemsMeta[item.toLowerCase()]
+  const itemObjectIDProperty = item.toLowerCase()
+  const itemMeta = itemsMeta[itemObjectIDProperty]
   // eslint-disable-next-line
   const itemColumns = React.useMemo(itemMeta.columns(league), [league])
   const [items, setItems] = useState([])
@@ -19,10 +20,16 @@ export default function ItemDetails() {
       method: 'GET',
       url: poeNinjaURLBuilder(item, { league })
     }).then(res => {
-      setItems(res.data?.lines)
+      let items = res.data?.lines
+      if (items.length > 500) {
+        items = items.filter(i => i.sparkline.totalChange > 0).slice(0, 500)
+      }
+
+      const normalizedItems = items.map(i => ({...i, itemType: itemObjectIDProperty}))
+      setItems(normalizedItems)
       return res
     })
-  }, [item, league])
+  }, [item, league, itemObjectIDProperty])
 
   return items.length > 0 ?
         <div className="items-table">
@@ -120,9 +127,9 @@ function Table({ columns, data, league }) {
     listOfURLs.forEach(url => window.open(url, target))
   }
 
-  const poeTradeMultiSearch = (listOfNamesToQuery = [], league = 'Standard') => {
-    const listOfURLs = listOfNamesToQuery.map(query => {
-      return `https://www.pathofexile.com/trade/search/${league}?q={"query":{"filters":{},"type":"${query}"}}`
+  const poeTradeMultiSearch = (listOfItems = [], league = 'Standard') => {
+    const listOfURLs = listOfItems.map(item => {
+      return `https://www.pathofexile.com/trade/search/${league}?q=${JSON.stringify(searchQueryBuilder(item))}`
     })
     openListOfURLs(listOfURLs)
   }
@@ -133,7 +140,7 @@ function Table({ columns, data, league }) {
     <div className="bulk-actions">
         <button
           disabled={selectedFlatRows.length === 0}
-          onClick={() => poeTradeMultiSearch(selectedFlatRows.map(r => r.original.name), league)}
+          onClick={() => poeTradeMultiSearch(selectedFlatRows.map(r => r.original), league)}
           className="button border-2 border-green-700 rounded p-3 bg-green-500 text-white">
           Multi-search
       </button>

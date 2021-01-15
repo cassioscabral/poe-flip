@@ -2,6 +2,46 @@ import React from 'react'
 import LazyLoad from 'react-lazyload';
 import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines';
 
+export const searchQueryBuilder = (item, itemMetaType, {
+  minPrice = 0, maxPrice = 9999
+} = {}) => {
+  const { name, type, itemType: itemIdentifier } = item
+  // Not working yet
+  // watchstone
+  // prophecy
+  // skillgem
+  let queryObject = {
+    "query": {
+      "filters": {
+        "trade_filters": {
+          "disabled": false,
+          "filters": {
+            "price": {
+              "min": minPrice,
+              "max": maxPrice
+            }
+          }
+        }
+      },
+      "status": {
+        "option": "online"
+      },
+      "stats": [
+        {
+          "type": "and",
+          "filters": []
+        }
+      ],
+      "type": type || name
+    },
+    "sort": {
+      "price": "asc"
+    }
+  }
+
+  return queryObject
+}
+
 const defaultColumns = (league = 'Standard') => () => [
   {
     Header: 'Name',
@@ -35,7 +75,6 @@ const defaultColumns = (league = 'Standard') => () => [
     filter: 'between',
     Cell: row => {
       const { totalChange, data } = row.row.original.sparkline
-      console.log('data', data);
       return (
         <div className={'item-change' + (totalChange > 0 ? ' text-green-600' : ' text-red-600')}>
           {/* <Sparklines data={data} limit={7} width={100} height={20} margin={5} color="blue"/> */}
@@ -70,12 +109,12 @@ const defaultColumns = (league = 'Standard') => () => [
     Cell: row => {
       return (
         <div className="actions">
-{/* https://www.pathofexile.com/trade/search/Standard?q={%22query%22:{%22filters%22:{},%22type%22:%22Winged%20Bestiary%20Scarab%22}} */}
+{/* https://www.pathofexile.com/trade/search/Standard?q={{query{:{{filters{:{},{type{:{Winged%20Bestiary%20Scarab{}} */}
           <a
             className="border-aqua border-2 p-2 rounded"
             target="_blank"
             rel="noreferrer"
-            href={`https://www.pathofexile.com/trade/search/${league}?q={"query":{"filters":{},"type":"${row.row.original.name}"}}`}>
+            href={`https://www.pathofexile.com/trade/search/${league}?q=${JSON.stringify(searchQueryBuilder(row.row.original))}`}>
           Search
         </a>
       </div>
@@ -83,31 +122,7 @@ const defaultColumns = (league = 'Standard') => () => [
     }
   }
 ]
-// ICONS URLs
-//  https://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/FragmentPhoenix.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/Delirium/DeliriumOrbScarabs.png?w=1&h=1&scale=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/Strongholds/IvoryWatchstone5.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/blight/items/OpalescentOil.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/Incubation/IncubationAbyss.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/Scarabs/GreaterScarabBreach.png?scale=1&scaleIndex=0&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/Delve/SanctifiedFossil.png?w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/Delve/Reroll2x2A.png?w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/Essence/Woe7.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Divination/InventoryIcon.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/ProphecyOrbRed.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Gems/Portal.png?scale=1&scaleIndex=0&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Rings/OpalRing.png?scale=1&scaleIndex=0&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Gems/ClusterBurst.png?scale=1&scaleIndex=0&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Maps/UndeadSiege.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/Gorge3.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Jewels/unique7.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/gen/image/WzksMTQseyJmIjoiMkRJdGVtc1wvRmxhc2tzXC9UYXN0ZU9mSGF0ZSIsInciOjEsImgiOjIsInNjYWxlIjp0cnVlLCJsZXZlbCI6MX1d/4727ad7a3a/Item.png
-//  https://web.poecdn.com/image/Art/2DItems/Weapons/OneHandWeapons/OneHandSwords/Varunastra.png?scale=1&w=2&h=3
-//  https://web.poecdn.com/image/Art/2DItems/Armours/Boots/Skyforth.png?scale=1&w=2&h=2
-//  https://web.poecdn.com/image/Art/2DItems/Amulets/AgateAmuletUnique.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/BestiaryOrbFull.png?scale=1&w=1&h=1
-//  https://web.poecdn.com/image/Art/2DItems/Currency/VialTemperedFlesh.png?scale=1&w=1&h=1
+
 const itemsMeta = {
   // currency: {
   //   disabled: true,
@@ -168,11 +183,11 @@ const itemsMeta = {
     columns: defaultColumns,
     icon: 'https://web.poecdn.com/image/Art/2DItems/Gems/ClusterBurst.png?scale=1&scaleIndex=0&w=1&h=1'
   },
-  // basetype: {
-  //   id: 'BaseType',
-  //   columns: defaultColumns,
-  //   icon: 'https://web.poecdn.com/image/Art/2DItems/Rings/OpalRing.png?scale=1&scaleIndex=0&w=1&h=1'
-  // },
+  basetype: {
+    id: 'BaseType',
+    columns: defaultColumns,
+    icon: 'https://web.poecdn.com/image/Art/2DItems/Rings/OpalRing.png?scale=1&scaleIndex=0&w=1&h=1'
+  },
   uniquemap: {
     id: 'UniqueMap',
     columns: defaultColumns,
@@ -201,7 +216,6 @@ const itemsMeta = {
 }
 const poeNinjaURLBuilder = (objectType, { league = 'Standard' } = {} ) => {
   const thisItemMetaInfo = itemsMeta[objectType.toLowerCase()]
-  console.log('thisItemMetaInfo', thisItemMetaInfo);
   const endpoint = thisItemMetaInfo?.endpoint?.length > 0 ? thisItemMetaInfo.endpoint : 'ItemOverview'
   return `${endpoint}?league=${league}&type=${objectType}`
 }
