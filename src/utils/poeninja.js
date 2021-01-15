@@ -2,14 +2,34 @@ import React from 'react'
 import LazyLoad from 'react-lazyload';
 import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines';
 
-export const searchQueryBuilder = (item, itemMetaType, {
-  minPrice = 0, maxPrice = 9999
+// const alternateGems = ['anomalous', 'divergente', 'phantasmal']
+// const isAlternatequality = (detailsId) => {
+//   const res =  alternateGems.some(v => detailsId.indexOf(v) > -1)
+//   return res
+// }
+// const getAlternateQualityGemInfo = (gemItem) => {
+//   // AlternateType == option
+//   // Anomalous     == 1
+//   // Divergent     == 2
+//   // Phantasmal    == 3
+
+//   // detailsId Example: "phantasmal-cyclone-20-20"
+//   const { detailsId } = gemItem
+//   const alternateGemName = detailsId.split('-')[0].toLowerCase()
+//   return {
+//     option: String(alternateGems.indexOf(alternateGemName) + 1)
+//   }
+// }
+export const searchQueryBuilder = (item, {
+  minPrice = 0, maxPrice = 99999
 } = {}) => {
-  const { name, type } = item
+  const { name, type, itemType: itemIdentifier } = item
   // Not working yet
   // watchstone
-  // prophecy
   // skillgem
+  // uniquemap
+  // uniquejewel
+  // uniqueflask
   let queryObject = {
     "query": {
       "filters": {
@@ -26,18 +46,59 @@ export const searchQueryBuilder = (item, itemMetaType, {
       "status": {
         "option": "online"
       },
-      "stats": [
-        {
-          "type": "and",
-          "filters": []
-        }
-      ],
+      // "stats": [
+      //   {
+      //     "type": "and",
+      //     "filters": []
+      //   }
+      // ],
       "type": type || name
     },
     "sort": {
       "price": "asc"
     }
   }
+
+  // Prophecies special case
+  if (itemIdentifier === 'prophecy') {
+    delete queryObject.query.type
+    queryObject.query.name = name
+    queryObject.query.filters['type_filters'] = {
+      filters: {
+        category: {
+          option: 'prophecy'
+        }
+      }
+    }
+  }
+
+  // SkillGems special case
+//   if (itemIdentifier === 'skillgem') {
+//     // regular gem search
+//     // https://www.pathofexile.com/trade/search/Standard?q={{query{:{{filters{:{{misc_filters{:{{filters{:{{gem_level{:{{min{:21,{max{:21},{corrupted{:{{option{:true},{quality{:{{min{:20,{max{:20}}}},{type{:{Hatred{}}
+
+//     // Anomalous gem search
+//     // https://www.pathofexile.com/trade/search/Standard?q={{query{:{{filters{:{{misc_filters{:{{filters{:{{gem_level{:{{min{:20,{max{:20},{corrupted{:{{option{:false},{gem_alternate_quality{:{{option{:{1{},{quality{:{{min{:20,{max{:20}}}},{type{:{Archmage%20Support{}}
+
+//     // Divergent gem search
+//     // https://www.pathofexile.com/trade/search/Standard?q={{query{:{{filters{:{{misc_filters{:{{filters{:{{gem_level{:{{min{:20,{max{:20},{corrupted{:{{option{:false},{gem_alternate_quality{:{{option{:{2{},{quality{:{{min{:20,{max{:20}}}},{type{:{Arcane%20Surge%20Support{}}
+
+//     // Phantasmal gem search
+// // https://www.pathofexile.com/trade/search/Standard?q={{query{:{{filters{:{{misc_filters{:{{filters{:{{gem_level{:{{min{:21,{max{:21},{corrupted{:{{option{:true},{gem_alternate_quality{:{{option{:{3{},{quality{:{{min{:20,{max{:20}}}},{type{:{Toxic%20Rain{}}
+
+// // https://www.pathofexile.com/trade/search/Standard?q={{query{:{{filters{:{{trade_filters{:{{disabled{:false,{filters{:{{price{:{{min{:0,{max{:99999}}},{misc_filters{:{{filters{:{{gem_level{:{{min{:1,{max{:1},{corrupted{:{{option{:false},{quality{:{{min{:20,{max{:20},{gem_alternate_quality{:{{option{:1}}}},{status{:{{option{:{online{},{type{:{Anomalous%20Vile%20Toxins%20Support{},{sort{:{{price{:{asc{}}
+//     // console.log('item', item);
+//     queryObject.query.filters['misc_filters'] = {
+//       filters: {
+//         'gem_level': { min: item.gemLevel, max: item.gemLevel },
+//         corrupted: { option: item.corrupted },
+//         quality: { min: item.gemQuality, max: item.gemQuality}
+//       }
+//     }
+//     if (isAlternatequality(item.detailsId)) {
+//       queryObject.query.filters['misc_filters'].filters['gem_alternate_quality'] = getAlternateQualityGemInfo(item)
+//     }
+//   }
 
   return queryObject
 }
@@ -63,6 +124,8 @@ const defaultColumns = (league = 'Standard') => () => [
             {originalItem.name}
             {originalItem?.variant?.length > 0 ? `, ${originalItem.variant}` : null}
             {originalItem?.baseType?.length > 0 ? `, ${originalItem.baseType}` : null}
+            <br />
+            {originalItem.corrupted ? <span className="text-red-700">Corrupted</span> : null}
           </div>
         </div>
       )
@@ -71,6 +134,7 @@ const defaultColumns = (league = 'Standard') => () => [
   {
     Header: 'Last 7 days',
     accessor: 'sparkline.totalChange',
+    sortType: "basic",
     Filter: NumberRangeColumnFilter,
     filter: 'between',
     Cell: row => {
