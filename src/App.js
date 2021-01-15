@@ -11,11 +11,12 @@ import CacheRoute, { CacheSwitch } from 'react-router-cache-route'
 
 import LazyLoad from 'react-lazyload';
 const leagues = [
+  { value: 'Ritual', label: 'Ritual' },
   { value: 'Standard', label: 'Standard' },
   { value: 'Heist', label: 'Heist' },
 ]
 
-const DEFAULT_LEAGUE = 'Standard'
+const DEFAULT_LEAGUE = 'Ritual'
 function App() {
 
 
