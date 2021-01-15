@@ -5,7 +5,7 @@ import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-spark
 export const searchQueryBuilder = (item, itemMetaType, {
   minPrice = 0, maxPrice = 9999
 } = {}) => {
-  const { name, type, itemType: itemIdentifier } = item
+  const { name, type } = item
   // Not working yet
   // watchstone
   // prophecy
